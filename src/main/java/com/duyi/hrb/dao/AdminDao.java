@@ -8,7 +8,7 @@ public interface AdminDao {
 
     void add(Admin admin);
 
-    void update(String account);
+    void update(Admin admin);
 
     Admin findByAccount(String account);
 

@@ -44,8 +44,6 @@ public class RSAEncrypt {
      *
      * @param str
      *            加密字符串
-     * @param publicKey
-     *            公钥
      * @return 密文
      * @throws Exception
      *             加密过程中的异常信息
@@ -66,8 +64,6 @@ public class RSAEncrypt {
      *
      * @param str
      *            加密字符串
-     * @param privateKey
-     *            私钥 
      * @return 铭文
      * @throws Exception
      *             解密过程中的异常信息 
@@ -84,16 +80,18 @@ public class RSAEncrypt {
         String outStr = new String(cipher.doFinal(inputByte));
         return outStr;
     }
-    public static void main(String[] args) throws Exception {
-        //生成公钥和私钥
+//    public static void main(String[] args) throws Exception {
+//        //生成公钥和私钥
 //        genKeyPair();
-        //加密字符串
-        String message = "panda";
-        String messageEn = encrypt(message);
-        System.out.println(message + "\t加密后的字符串为:" + messageEn);
-        String messageDe = decrypt(messageEn);
-        System.out.println("还原后的字符串为:" + messageDe);
-    }
+//        //加密字符串
+//        String message = "panda";
+//        String messageEn = encrypt(message);
+//        System.out.println(message + "\t加密后的字符串为:" + messageEn);
+//        String messageDe = decrypt(messageEn);
+//        System.out.println("还原后的字符串为:" + messageDe);
+//    }
 
+
+//
 
 }

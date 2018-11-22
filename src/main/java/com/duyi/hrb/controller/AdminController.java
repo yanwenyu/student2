@@ -86,9 +86,11 @@ public class AdminController {
     }
 
 
-    @RequestMapping("/adm/adminActivate")
+    @RequestMapping("/adminActivate")
     //添加一个update修改状态
     public void adminActivate (String encryptionAccount ,HttpServletRequest res, HttpServletResponse resp) throws Exception {
+
+        System.out.println(encryptionAccount);
 
         String encodeAccount = RSAEncrypt.decrypt(encryptionAccount);
 
@@ -119,14 +121,8 @@ public class AdminController {
 
     }
 
-
-
-
-
-
-
     @RequestMapping(value = "/register" , method = RequestMethod.POST)
-    public void registe(String account, String password, String email, HttpServletResponse resp) throws IOException, NoSuchAlgorithmException {
+    public void registe(String account, String password, String email, HttpServletResponse resp) throws Exception {
 
         JSONObject result = new JSONObject();
 
@@ -163,15 +159,56 @@ public class AdminController {
             return;
         }
 
+        // 邮箱验证规则
+        String regEx = "^[A-Za-z\\d]+([-_.][A-Za-z\\d]+)*@([A-Za-z\\d]+[-.])+[A-Za-z\\d]{2,5}$";
+
+        // 编译正则表达式
+        Pattern pattern = Pattern.compile(regEx);
+
+        // 忽略大小写的写法
+        // Pattern pat = Pattern.compile(regEx, Pattern.CASE_INSENSITIVE);
+
+        Matcher matcher = pattern.matcher(email);
+
+        if (!matcher.matches()) {
+
+            result.put("status","fail");
+
+            result.put("message","The Email format error");
+
+            resp.getWriter().write(result.toJSONString());
+
+            return;
+
+        }
+
 
 
         boolean isTrue = adminService.addAdmin(account,password,email);
 
         if (isTrue) {
-            
+
+            String user = "18846411586@163.com";
+
+            String password1 = "ywywenyu22";
+
+            String host = "smtp.163.com";
+
+            String from = "18846411586@163.com";
+
+            String to = email;// 收件人
+
+            String subject = "输入邮件主题";
+
+            String encryptionAccount = RSAEncrypt.encrypt(account);
+
+            adminService.senEmail(encryptionAccount,user,password1,host,from,to,subject);
+
             result.put("status","success");
 
             result.put("message","Please open your registered email for activation!");
+
+
 
             resp.getWriter().write(result.toJSONString());
 

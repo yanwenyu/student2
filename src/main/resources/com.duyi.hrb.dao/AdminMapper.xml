@@ -12,7 +12,7 @@
     </insert>
 
 
-    <update id="update" parameterType="com.duyi.hrb.domain.Admin"  >
+    <update id="update" parameterType="om.duyi.hrb.domain.Admin"  >
 
         update admin_inf set status = #{status} where account = #{account};
 

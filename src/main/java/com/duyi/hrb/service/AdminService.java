@@ -104,7 +104,8 @@ public class AdminService {
             return false;
         } else {
 
-            adminDao.update(account);
+            admin.setStatus(1);
+            adminDao.update(admin);
 
             return true;
 
