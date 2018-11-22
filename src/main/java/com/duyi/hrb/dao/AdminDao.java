@@ -10,6 +10,8 @@ public interface AdminDao {
 
     void update(Admin admin);
 
+    void updatePassword(Admin admin);
+
     Admin findByAccount(String account);
 
     Admin findByEmail(String email);
