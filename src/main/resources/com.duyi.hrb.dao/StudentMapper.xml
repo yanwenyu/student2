@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.duyi.hrb.dao.StudentDao">
+
+    <insert id="add" parameterType="com.duyi.hrb.domain.Student">
+
+        insert into student_inf(sno, name, email,sex,birth,phone,address,uid,ctime,utime)values (#{sNo},#{name},#{email},#{sex},#{birth},#{phone},#{address},#{uId},now(),now())
+
+    </insert>
+
+    <update id="update" parameterType="com.duyi.hrb.domain.Student"  >
+
+        update student_inf set email = #{email}, name = #{name}, sex = #{sex}, birth = #{birth}, phone = #{phone}, address = #{address} where sno = #{sNo};
+
+    </update>
+
+    <delete id="del" parameterType="String">
+
+        delete from student_inf where sno = #{sNo};
+
+    </delete>
+
+    <select id="findByAll" parameterType="String" resultType="com.duyi.hrb.domain.Student">
+
+       select * from student_inf where uid = #{uId};
+
+    </select>
+
+    <select id="findBySno" parameterType="String" resultType="com.duyi.hrb.domain.Student">
+
+        select * from student_inf where sno = #{sno};
+
+    </select>
+</mapper>

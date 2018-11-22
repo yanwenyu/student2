@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.duyi.hrb.dao.AdminDao">
+
+    <insert id="add" parameterType="com.duyi.hrb.domain.Admin">
+
+        insert into admin_inf(account,password,email) values(#{account},#{password},#{email});
+
+    </insert>
+
+
+    <update id="update" parameterType="com.duyi.hrb.domain.Admin"  >
+
+        update admin_inf set status = #{status} where account = #{account};
+
+    </update>
+
+    <select id="findAll" resultType="com.duyi.hrb.domain.Admin">
+
+        select * from admin_inf;
+
+    </select>
+
+    <select id="findByAccount" parameterType="String" resultType="com.duyi.hrb.domain.Admin">
+
+       select * from admin_inf where account = #{account};
+
+    </select>
+</mapper>
