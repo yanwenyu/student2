@@ -8,9 +8,11 @@ public interface AdminDao {
 
     void add(Admin admin);
 
-    void update(Admin admin);
+    void update(String account);
 
     Admin findByAccount(String account);
+
+    Admin findByEmail(String email);
 
     List<Admin> findAll();
 

@@ -5,6 +5,7 @@ import com.duyi.hrb.domain.Admin;
 import com.duyi.hrb.domain.Student;
 import com.duyi.hrb.service.AdminService;
 import com.duyi.hrb.service.StudentService;
+import com.duyi.hrb.util.MailOperation;
 import com.duyi.hrb.util.RSAEncrypt;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -17,6 +18,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Controller
 public class AdminController {
@@ -82,8 +85,39 @@ public class AdminController {
 
     }
 
-    //添加一个update修改状态
 
+    @RequestMapping("/adm/adminActivate")
+    //添加一个update修改状态
+    public void adminActivate (String encryptionAccount ,HttpServletRequest res, HttpServletResponse resp) throws Exception {
+
+        String encodeAccount = RSAEncrypt.decrypt(encryptionAccount);
+
+        System.out.println(encodeAccount);
+
+        JSONObject result = new JSONObject();
+
+        boolean isTrue = adminService.updateStatus(encodeAccount);
+
+//            判断是否存在这个人
+
+        if (isTrue) {
+
+            result.put("status", "success");
+
+            resp.getWriter().write(result.toJSONString());
+
+
+        } else {
+
+            result.put("message", "not find this user");
+
+            result.put("status", "fail");
+
+            resp.getWriter().write(result.toJSONString());
+
+        }
+
+    }
 
 
 
@@ -92,7 +126,7 @@ public class AdminController {
 
 
     @RequestMapping(value = "/register" , method = RequestMethod.POST)
-    public void registe(String account, String password, String email, HttpServletRequest res, HttpServletResponse resp) throws IOException, NoSuchAlgorithmException {
+    public void registe(String account, String password, String email, HttpServletResponse resp) throws IOException, NoSuchAlgorithmException {
 
         JSONObject result = new JSONObject();
 
@@ -106,6 +140,7 @@ public class AdminController {
 
             return;
         }
+
         if (password == null || password.equals("")) {
 
             result.put("status","fail");
@@ -128,11 +163,15 @@ public class AdminController {
             return;
         }
 
+
+
         boolean isTrue = adminService.addAdmin(account,password,email);
 
         if (isTrue) {
-
+            
             result.put("status","success");
+
+            result.put("message","Please open your registered email for activation!");
 
             resp.getWriter().write(result.toJSONString());
 
@@ -171,4 +210,79 @@ public class AdminController {
 
         }
     }
+
+
+    @RequestMapping(value = "/act")
+    @ResponseBody
+    public void activateHref ( HttpServletRequest req ,HttpServletResponse resp) throws Exception {
+
+        JSONObject result = new JSONObject();
+
+        String email = req.getParameter("email");
+
+        // 邮箱验证规则
+        String regEx = "^[A-Za-z\\d]+([-_.][A-Za-z\\d]+)*@([A-Za-z\\d]+[-.])+[A-Za-z\\d]{2,5}$";
+
+        // 编译正则表达式
+        Pattern pattern = Pattern.compile(regEx);
+
+        // 忽略大小写的写法
+        // Pattern pat = Pattern.compile(regEx, Pattern.CASE_INSENSITIVE);
+
+        Matcher matcher = pattern.matcher(email);
+
+        // 字符串是否与正则表达式相匹配
+        if (matcher.matches()) {
+
+            System.out.println("格式正确");
+
+            //发送邮件
+
+            String user = "18846411586@163.com";
+
+            String password = "ywywenyu22";
+
+            String host = "smtp.163.com";
+
+            String from = "18846411586@163.com";
+
+            String to = email;// 收件人
+
+            String subject = "输入邮件主题";
+
+
+            Admin ad = adminService.findByEmail(email);
+
+//            判断是否存在这个人
+
+            if (ad == null) {
+
+                result.put("status", "fail");
+
+                result.put("message", "not find this user");
+
+                resp.getWriter().write(result.toJSONString());
+
+                return;
+
+            }
+
+            String encryptionAccount = RSAEncrypt.encrypt(ad.getAccount());
+
+            adminService.senEmail(encryptionAccount,user,password,host,from,to,subject);
+
+
+
+        } else {
+
+            result.put("status", "fail");
+
+            result.put("message", "Mail format error");
+
+            resp.getWriter().write(result.toJSONString());
+
+        }
+
+    }
+
 }

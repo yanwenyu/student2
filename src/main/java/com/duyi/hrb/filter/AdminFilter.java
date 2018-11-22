@@ -1,18 +1,14 @@
 package com.duyi.hrb.filter;
 
 import com.duyi.hrb.domain.Admin;
-import com.duyi.hrb.domain.Student;
 import com.duyi.hrb.service.AdminService;
-import com.duyi.hrb.service.StudentService;
 import com.duyi.hrb.util.RSAEncrypt;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.FileSystemXmlApplicationContext;
 
 import javax.servlet.*;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 public class AdminFilter implements Filter {
@@ -47,7 +43,9 @@ public class AdminFilter implements Filter {
         System.out.println(cookies);
 
 //        System.out.println(cookies.length);
-        boolean b = false;
+//        boolean b = false;
+        int a = 0; //0:未登录
+
 
         for (Cookie cookie : cookies) {
 
@@ -65,16 +63,29 @@ public class AdminFilter implements Filter {
                 try {
                     String encodeSno = RSAEncrypt.decrypt(account);
 
+                    System.out.println(encodeSno);
+
                     Admin admin = adminService.findByAccount(encodeSno);
 
+                    //判断是否登录
                     if (admin != null) {
 
-                        b = true;
+                        if (admin.getStatus() == 0) {
 
-                        System.out.println("filter放行");
+                            a = 1; //1:登录未激活
 
-                        fil.doFilter(req, res);
+                        } else {
+
+                            a = 2; //2:登录已激活
+
+                            System.out.println("filter放行");
+
+                            fil.doFilter(req, res);
+                        }
+
                     }
+
+
                 } catch (Exception e) {
 
                     e.printStackTrace();
@@ -82,11 +93,25 @@ public class AdminFilter implements Filter {
                 }
             }
         }
-        if (!b) {
+//        if (!b) {
+//
+//            System.out.println("跳转回adminLogin.html");
+//
+//            req.getRequestDispatcher("/adminLogin").forward(req, res);
+//
+//        }
+
+        if ( a == 0) {
 
             System.out.println("跳转回adminLogin.html");
 
             req.getRequestDispatcher("/adminLogin").forward(req, res);
+
+        } else if ( a == 1) { //登录未激活，跳转到激活页面
+
+            System.out.println("跳转回activate.html");
+
+            req.getRequestDispatcher("/activate.html").forward(req, res);
 
         }
     }

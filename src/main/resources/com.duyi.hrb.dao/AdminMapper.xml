@@ -29,4 +29,11 @@
        select * from admin_inf where account = #{account};
 
     </select>
+
+    <select id="findByEmail" parameterType="String" resultType="com.duyi.hrb.domain.Admin">
+
+       select * from admin_inf where email = #{email};
+
+    </select>
+
 </mapper>
