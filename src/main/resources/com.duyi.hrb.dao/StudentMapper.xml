@@ -29,9 +29,9 @@
 
     </select>
 
-    <select id="findBySno" parameterType="String" resultType="com.duyi.hrb.domain.Student">
+    <select id="findByPage" resultType="com.duyi.hrb.domain.Student">
 
-        select * from student_inf where sno = #{sno};
+        select * from student_inf where uid = #{0} limit page = #{1};
 
     </select>
 </mapper>

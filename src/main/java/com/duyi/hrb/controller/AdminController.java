@@ -35,19 +35,26 @@ public class AdminController {
     @Autowired
     StudentService studentService;
 
+    private void setHeader(HttpServletResponse resp) {
+
+        resp.setHeader("Access-Control-Allow-Origin", "*");
+        resp.setHeader("content-type", "application:json;charset=utf8");
+        resp.setHeader("Access-Control-Allow-Methods", "POST");
+        resp.setHeader("Access-Control-Allow-Headers", "x-requested-with,content-type");
+
+    }
+
     @RequestMapping(value = "/adminLogin")
     @ResponseBody
-    public void login(@RequestParam(name = "callback")String callback, String account, String password, HttpServletRequest res, HttpServletResponse resp) throws Exception {
+    public void login(@RequestParam(name = "callback") String callback, String account, String password, HttpServletRequest res, HttpServletResponse resp) throws Exception {
 
+        setHeader(resp);
 
-
-        resp.setHeader("content-type", "application/json;charset=utf8");
-        resp.setHeader("Access-Control-Allow-Origin", "*");//跨域
-        resp.setHeader("Access-Control-Allow-Methods", "POST");
-        resp.setHeader("Access-Control-Allow-Headers", "x-requested-with,content-type,Set-Cookie");
-//        resp.setHeader("Access-Control-Allow-Credentials", "true");
-        resp.setHeader("Set-cookie", "aaa=123123");
-//        resp.setHeader("Access-Control-Expose-Headers", "Set-Cookie");
+//        resp.setHeader("content-type", "application/json;charset=utf8");
+//        resp.setHeader("Access-Control-Allow-Origin", "*");//跨域
+//        resp.setHeader("Access-Control-Allow-Methods", "POST");
+//        resp.setHeader("Access-Control-Allow-Headers", "x-requested-with,content-type,Set-Cookie");
+//      resp.setHeader("Access-Control-Allow-Credentials", "true");
 
         System.out.println("账号：" + account);
         System.out.println("密码：" + password);
@@ -60,7 +67,7 @@ public class AdminController {
 
             result.put("message", "The account is null");
 
-            resp.getWriter().write(callback + "(" +result.toJSONString() + ")");
+            resp.getWriter().write(callback + "(" + result.toJSONString() + ")");
 
             return;
         }
@@ -70,7 +77,7 @@ public class AdminController {
 
             result.put("message", "The password is null");
 
-            resp.getWriter().write(callback + "(" +result.toJSONString() + ")");
+            resp.getWriter().write(callback + "(" + result.toJSONString() + ")");
 
             return;
         }
@@ -83,7 +90,7 @@ public class AdminController {
 
             result.put("message", "account or password error");
 
-            resp.getWriter().write(callback + "(" +result.toJSONString() + ")");
+            resp.getWriter().write(callback + "(" + result.toJSONString() + ")");
         } else {
 
             String str = RSAEncrypt.encrypt(account);
@@ -98,7 +105,7 @@ public class AdminController {
 
             result.put("status", "success");
 
-            resp.getWriter().write(callback + "(" +result.toJSONString() + ")");
+            resp.getWriter().write(callback + "(" + result.toJSONString() + ")");
         }
         resp.getWriter().close();
 
@@ -107,6 +114,8 @@ public class AdminController {
     @RequestMapping(value = "/adminActivate", method = RequestMethod.POST)
     //添加一个update修改状态
     public void adminActivate(String encryptionAccount, HttpServletRequest res, HttpServletResponse resp) throws Exception {
+
+        setHeader(resp);
 
         System.out.println(encryptionAccount);
 
@@ -141,13 +150,14 @@ public class AdminController {
     @RequestMapping(value = "/register", method = RequestMethod.POST)
     public void registe(String account, String password, String rePassword, String email, HttpServletResponse resp) throws Exception {
 
-        resp.setHeader("content-type", "application:json;charset=utf8");
-        resp.setHeader("Access-Control-Allow-Origin", "*");
-        resp.setHeader("Access-Control-Allow-Methods", "POST");
-        resp.setHeader("Access-Control-Allow-Headers", "x-requested-with,content-type");
+//        resp.setHeader("content-type", "application:json;charset=utf8");
+//        resp.setHeader("Access-Control-Allow-Origin", "*");
+//        resp.setHeader("Access-Control-Allow-Methods", "POST");
+//        resp.setHeader("Access-Control-Allow-Headers", "x-requested-with,content-type");
+
+        setHeader(resp);
 
         System.out.println(account + password + rePassword + email);
-
 
         JSONObject result = new JSONObject();
 
@@ -278,6 +288,8 @@ public class AdminController {
 
         JSONObject result = new JSONObject();
 
+        setHeader(resp);
+
         if (stu == null) {
 
             result.put("status", "fail");
@@ -298,6 +310,8 @@ public class AdminController {
     public void activateHref(@RequestParam(name = "email") String email, HttpServletRequest req, HttpServletResponse resp) throws Exception {
 
         JSONObject result = new JSONObject();
+
+        setHeader(resp);
 
 //        String email = req.getParameter("email");
 
@@ -372,6 +386,8 @@ public class AdminController {
 
         JSONObject result = new JSONObject();
 
+        setHeader(resp);
+
         // 邮箱验证规则
         String regEx = "^[A-Za-z\\d]+([-_.][A-Za-z\\d]+)*@([A-Za-z\\d]+[-.])+[A-Za-z\\d]{2,5}$";
 
@@ -444,6 +460,8 @@ public class AdminController {
                                @RequestParam(name = "urlEncryptionAccount") String urlEncryptionAccount, HttpServletResponse resp) throws Exception {
 
         JSONObject result = new JSONObject();
+
+        setHeader(resp);
 
         if (newPassword == null || newPassword.equals("")) {
 

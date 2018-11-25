@@ -13,5 +13,7 @@ public interface StudentDao {
 
     List<Student> findByAll(String uId);
 
+    List<Student> findByPage(String uId,int page);
+
     Student findBySno(String sno);
 }

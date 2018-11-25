@@ -9,7 +9,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -24,38 +23,81 @@ public class StudentController {
 
     @RequestMapping(value = "/adm/findAll", method = RequestMethod.POST)
 
-    public void findAll(String callback,int page, HttpServletRequest res, HttpServletResponse resp) throws Exception {
+    public void findAll(String callback, String uId, HttpServletRequest res, HttpServletResponse resp) throws Exception {
 
         JSONObject result = new JSONObject();
 
+//        resp.setHeader("content-type", "application:json;charset=utf8");
+//        resp.setHeader("Access-Control-Allow-Origin", "*");
+//        resp.setHeader("Access-Control-Allow-Methods", "POST");
+//        resp.setHeader("Access-Control-Allow-Headers", "x-requested-with,content-type");
+        setHeader(resp);
 
-        resp.setHeader("content-type", "application:json;charset=utf8");
-        resp.setHeader("Access-Control-Allow-Origin", "*");
-        resp.setHeader("Access-Control-Allow-Methods", "POST");
-        resp.setHeader("Access-Control-Allow-Headers", "x-requested-with,content-type");
+        String encodeUid = RSAEncrypt.decrypt(uId);
 
-        String uId = "";
+//        String uId = "";
+//
+//        Cookie[] cookies = res.getCookies();
+//
+//        ok:
+//        for (Cookie cookie : cookies) {
+//
+//            String accountName = cookie.getName();
+//
+//            if ("account".equals(accountName)) {
+//
+//                String accountValue = cookie.getValue();
+//
+//                uId = RSAEncrypt.decrypt(accountValue);
+//
+//                break ok;
+//            }
+//        }
 
-        Cookie[] cookies = res.getCookies();
-
-        ok:
-        for (Cookie cookie : cookies) {
-
-            String accountName = cookie.getName();
-
-            if ("account".equals(accountName)) {
-
-                String accountValue = cookie.getValue();
-
-                uId = RSAEncrypt.decrypt(accountValue);
-
-                break ok;
-            }
-        }
-
-        List<Student> findAll = studentService.findAll(uId);
+        List<Student> findAll = studentService.findAll(encodeUid);
         result.put("findAll", findAll.toString());
-        resp.getWriter().write(callback + "(" +result.toJSONString() + ")");
+        resp.getWriter().write(callback + "(" + result.toJSONString() + ")");
+    }
+
+
+
+
+    @RequestMapping(value = "/adm/findByPage", method = RequestMethod.POST)
+
+    public void findByPage(String callback, int page, String uId, HttpServletRequest res, HttpServletResponse resp) throws Exception {
+
+        JSONObject result = new JSONObject();
+//
+//        resp.setHeader("Access-Control-Allow-Origin", "*");
+//        resp.setHeader("content-type", "application:json;charset=utf8");
+//        resp.setHeader("Access-Control-Allow-Methods", "POST");
+//        resp.setHeader("Access-Control-Allow-Headers", "x-requested-with,content-type");
+
+        setHeader(resp);
+
+//        String uId = "";
+//
+//        Cookie[] cookies = res.getCookies();
+//
+//        ok:
+//        for (Cookie cookie : cookies) {
+//
+//            String accountName = cookie.getName();
+//
+//            if ("account".equals(accountName)) {
+//
+//                String accountValue = cookie.getValue();
+//
+//                uId = RSAEncrypt.decrypt(accountValue);
+//
+//                break ok;
+//            }
+//        }
+
+        String encodeUid = RSAEncrypt.decrypt(uId);
+        List<Student> findByPage = studentService.findByPage(encodeUid, page);
+        result.put("findAll", findByPage.toString());
+        resp.getWriter().write(callback + "(" + result.toJSONString() + ")");
     }
 
 //    @RequestMapping("/page/findBySno")
@@ -84,6 +126,8 @@ public class StudentController {
 
     public void delBySno(String sNo, HttpServletResponse resp) throws IOException {
 
+        setHeader(resp);
+
         JSONObject result = new JSONObject();
 
         boolean isTrue = studentService.delBySno(sNo);
@@ -104,16 +148,15 @@ public class StudentController {
         }
     }
 
-//    JSONObject result = new JSONObject();
-
     @RequestMapping(value = "/adm/addStudent", method = RequestMethod.POST)
 
-    public void addStudent(String sNo, String name, String email, Integer sex, Integer birth, String phone, String address, HttpServletRequest res, HttpServletResponse resp) throws Exception {
+    public void addStudent(String sNo, String name, String email, Integer sex, Integer birth, String phone, String address, String uId, HttpServletRequest res, HttpServletResponse resp) throws Exception {
 
         check(sNo, name, email, sex, birth, phone, address, res, resp);
 
         JSONObject result = new JSONObject();
 
+        setHeader(resp);
 //        if (sNo == null || sNo.equals("")) {
 //            result.put("status", "fail");
 //
@@ -161,28 +204,31 @@ public class StudentController {
 //            return;
 //        }
 
-        String uId = "";
+//        String uId = "";
+//
+//        Cookie[] cookies = res.getCookies();
+//
+//        ok:
+//        for (Cookie cookie : cookies) {
+//
+//            String accountName = cookie.getName();
+//
+//            if ("account".equals(accountName)) {
+//
+//                String accountValue = cookie.getValue();
+//
+//                uId = RSAEncrypt.decrypt(accountValue);
+//
+////                System.out.println(uId);
+//
+//                break ok;
+//            }
+//        }
 
-        Cookie[] cookies = res.getCookies();
 
-        ok:
-        for (Cookie cookie : cookies) {
+        String encodeUid = RSAEncrypt.decrypt(uId);
 
-            String accountName = cookie.getName();
-
-            if ("account".equals(accountName)) {
-
-                String accountValue = cookie.getValue();
-
-                uId = RSAEncrypt.decrypt(accountValue);
-
-//                System.out.println(uId);
-
-                break ok;
-            }
-        }
-
-        boolean isTrue = studentService.addStudent(sNo, name, email, sex, birth, phone, address, uId);
+        boolean isTrue = studentService.addStudent(sNo, name, email, sex, birth, phone, address, encodeUid);
 
         if (isTrue) {
 
@@ -210,6 +256,8 @@ public class StudentController {
 
         JSONObject result = new JSONObject();
 
+        setHeader(resp);
+
         boolean isTrue = studentService.update(sNo, name, email, sex, birth, phone, address);
 
         if (isTrue) {
@@ -231,6 +279,8 @@ public class StudentController {
     private void check(String sNo, String name, String email, Integer sex, Integer birth, String phone, String address, HttpServletRequest res, HttpServletResponse resp) throws IOException {
 
         JSONObject result = new JSONObject();
+
+        setHeader(resp);
 
         if (sNo == null || sNo.equals("")) {
             result.put("status", "fail");
@@ -290,7 +340,14 @@ public class StudentController {
             return;
         }
     }
+    private void setHeader(HttpServletResponse resp) {
 
+        resp.setHeader("Access-Control-Allow-Origin", "*");
+        resp.setHeader("content-type", "application:json;charset=utf8");
+        resp.setHeader("Access-Control-Allow-Methods", "POST");
+        resp.setHeader("Access-Control-Allow-Headers", "x-requested-with,content-type");
+
+    }
 //    @RequestMapping("/login")
 //
 //    public void login(String sNo, String password, HttpServletResponse resp, HttpServletRequest res) throws Exception {

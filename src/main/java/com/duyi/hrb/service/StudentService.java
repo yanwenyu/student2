@@ -3,6 +3,7 @@ package com.duyi.hrb.service;
 import com.duyi.hrb.dao.StudentDao;
 import com.duyi.hrb.domain.Student;
 import com.duyi.hrb.util.MD5Util;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,7 +15,7 @@ public class StudentService {
     @Autowired
     StudentDao studentDao;
 
-    public boolean addStudent(String sNo, String name, String email, int sex, int birth, String phone, String address , String uId) {
+    public boolean addStudent(String sNo, String name, String email, int sex, int birth, String phone, String address, String uId) {
 
         Student student1 = studentDao.findBySno(sNo);
 
@@ -100,6 +101,11 @@ public class StudentService {
     public List<Student> findAll(String uId) {
 
         return studentDao.findByAll(uId);
+    }
+
+    public List<Student> findByPage(String uId,Integer page) {
+
+        return studentDao.findByPage(uId,page);
     }
 
     public Student findBySno(String sNo) {
