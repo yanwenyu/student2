@@ -9,6 +9,7 @@ import org.springframework.context.support.FileSystemXmlApplicationContext;
 import javax.servlet.*;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 public class AdminFilter implements Filter {
@@ -34,9 +35,14 @@ public class AdminFilter implements Filter {
 //
 //        HttpServletRequest request = (HttpServletRequest) req;
 //
-//        HttpServletResponse response = (HttpServletResponse) res;
+        HttpServletResponse resp = (HttpServletResponse) res;
 //
 //        StringBuffer path = ((HttpServletRequest) req).getRequestURL();
+
+        resp.setHeader("content-type", "application:json;charset=utf8");
+        resp.setHeader("Access-Control-Allow-Origin", "*");
+        resp.setHeader("Access-Control-Allow-Methods", "POST");
+        resp.setHeader("Access-Control-Allow-Headers", "x-requested-with,content-type");
 
         Cookie[] cookies = ((HttpServletRequest) req).getCookies();
 

@@ -5,6 +5,7 @@ import com.duyi.hrb.domain.Admin;
 import com.duyi.hrb.domain.Student;
 import com.duyi.hrb.service.AdminService;
 import com.duyi.hrb.service.StudentService;
+import com.duyi.hrb.util.MD5Util;
 import com.duyi.hrb.util.MailOperation;
 import com.duyi.hrb.util.RSAEncrypt;
 import org.apache.ibatis.annotations.Param;
@@ -19,6 +20,8 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.net.URLDecoder;
+import java.net.URLEncoder;
 import java.security.NoSuchAlgorithmException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -32,9 +35,22 @@ public class AdminController {
     @Autowired
     StudentService studentService;
 
-    @RequestMapping(value = "/adminLogin", method = RequestMethod.POST)
+    @RequestMapping(value = "/adminLogin")
     @ResponseBody
-    public void login(String account, String password, HttpServletRequest res, HttpServletResponse resp) throws Exception {
+    public void login(@RequestParam(name = "callback")String callback, String account, String password, HttpServletRequest res, HttpServletResponse resp) throws Exception {
+
+
+
+        resp.setHeader("content-type", "application/json;charset=utf8");
+        resp.setHeader("Access-Control-Allow-Origin", "*");//跨域
+        resp.setHeader("Access-Control-Allow-Methods", "POST");
+        resp.setHeader("Access-Control-Allow-Headers", "x-requested-with,content-type,Set-Cookie");
+//        resp.setHeader("Access-Control-Allow-Credentials", "true");
+        resp.setHeader("Set-cookie", "aaa=123123");
+//        resp.setHeader("Access-Control-Expose-Headers", "Set-Cookie");
+
+        System.out.println("账号：" + account);
+        System.out.println("密码：" + password);
 
         JSONObject result = new JSONObject();
 
@@ -44,7 +60,7 @@ public class AdminController {
 
             result.put("message", "The account is null");
 
-            resp.getWriter().write(result.toJSONString());
+            resp.getWriter().write(callback + "(" +result.toJSONString() + ")");
 
             return;
         }
@@ -54,7 +70,7 @@ public class AdminController {
 
             result.put("message", "The password is null");
 
-            resp.getWriter().write(result.toJSONString());
+            resp.getWriter().write(callback + "(" +result.toJSONString() + ")");
 
             return;
         }
@@ -67,7 +83,7 @@ public class AdminController {
 
             result.put("message", "account or password error");
 
-            resp.getWriter().write(result.toJSONString());
+            resp.getWriter().write(callback + "(" +result.toJSONString() + ")");
         } else {
 
             String str = RSAEncrypt.encrypt(account);
@@ -82,12 +98,13 @@ public class AdminController {
 
             result.put("status", "success");
 
-            resp.getWriter().write(result.toJSONString());
+            resp.getWriter().write(callback + "(" +result.toJSONString() + ")");
         }
+        resp.getWriter().close();
 
     }
 
-    @RequestMapping(value = "/adminActivate" , method = RequestMethod.POST)
+    @RequestMapping(value = "/adminActivate", method = RequestMethod.POST)
     //添加一个update修改状态
     public void adminActivate(String encryptionAccount, HttpServletRequest res, HttpServletResponse resp) throws Exception {
 
@@ -123,6 +140,14 @@ public class AdminController {
 
     @RequestMapping(value = "/register", method = RequestMethod.POST)
     public void registe(String account, String password, String rePassword, String email, HttpServletResponse resp) throws Exception {
+
+        resp.setHeader("content-type", "application:json;charset=utf8");
+        resp.setHeader("Access-Control-Allow-Origin", "*");
+        resp.setHeader("Access-Control-Allow-Methods", "POST");
+        resp.setHeader("Access-Control-Allow-Headers", "x-requested-with,content-type");
+
+        System.out.println(account + password + rePassword + email);
+
 
         JSONObject result = new JSONObject();
 
@@ -222,6 +247,7 @@ public class AdminController {
             String subject = "输入邮件主题";
 
             String encryptionAccount = RSAEncrypt.encrypt(account);
+
 
             adminService.senEmail(encryptionAccount, user, password1, host, from, to, subject);
 
@@ -324,7 +350,9 @@ public class AdminController {
 
             String encryptionAccount = RSAEncrypt.encrypt(ad.getAccount());
 
-            adminService.senEmail(encryptionAccount, user, password, host, from, to, subject);
+            String urlEncryptionAccount = URLEncoder.encode(encryptionAccount, "utf-8");
+
+            adminService.senEmail(urlEncryptionAccount, user, password, host, from, to, subject);
 
         } else {
 
@@ -338,7 +366,7 @@ public class AdminController {
 
     }
 
-    @RequestMapping(value = "/sendForgetEmail",method = RequestMethod.POST)
+    @RequestMapping(value = "/sendForgetEmail", method = RequestMethod.POST)
     @ResponseBody
     public void sendForgetEmail(@RequestParam(name = "email") String email, HttpServletResponse resp) throws Exception {
 
@@ -393,7 +421,9 @@ public class AdminController {
 
             String encryptionAccount = RSAEncrypt.encrypt(ad.getAccount());
 
-            adminService.senForgetEmail(encryptionAccount, user, password, host, from, to, subject);
+            String urlEncryptionAccount = URLEncoder.encode(encryptionAccount, "utf-8");
+
+            adminService.senForgetEmail(urlEncryptionAccount, user, password, host, from, to, subject);
 
         } else {
 
@@ -408,10 +438,10 @@ public class AdminController {
     }
 
 
-    @RequestMapping(value = "/forgotPassword",method = RequestMethod.POST)
+    @RequestMapping(value = "/forgotPassword", method = RequestMethod.POST)
     public void forgotPassword(@RequestParam(name = "newPassword") String newPassword,
                                @RequestParam(name = "cofPassword") String cofPassword,
-                               @RequestParam(name = "encryptionAccount") String encryptionAccount, HttpServletResponse resp) throws Exception {
+                               @RequestParam(name = "urlEncryptionAccount") String urlEncryptionAccount, HttpServletResponse resp) throws Exception {
 
         JSONObject result = new JSONObject();
 
@@ -451,13 +481,19 @@ public class AdminController {
 
         }
 
-        System.out.println(encryptionAccount);
+        System.out.println("urlEncryptionAccount:" + urlEncryptionAccount);
 
-        String encodeAccount = RSAEncrypt.decrypt(encryptionAccount);
+//        String encryptionAccount = URLDecoder.decode(urlEncryptionAccount,"utf-8");
+
+//        System.out.println("encryptionAccount:" + encryptionAccount);
+
+        String encodeAccount = RSAEncrypt.decrypt(urlEncryptionAccount);
+
+        System.out.println("encodeAccount" + encodeAccount);
 
         //修改密码语句
 
-        boolean isTrue = adminService.updatePassword(encodeAccount,newPassword);
+        boolean isTrue = adminService.updatePassword(encodeAccount, newPassword);
 
         if (isTrue) {
 

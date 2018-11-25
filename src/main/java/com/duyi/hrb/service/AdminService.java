@@ -95,7 +95,7 @@ public class AdminService {
 
     }
 
-    public void senForgetEmail(String encryptionAccount, String user, String password, String host, String from, String to, String subject) throws Exception {
+    public void senForgetEmail(String urlEncryptionAccount, String user, String password, String host, String from, String to, String subject) throws Exception {
 
         //邮箱内容
         StringBuffer sb = new StringBuffer();
@@ -103,8 +103,8 @@ public class AdminService {
 
         MailOperation operation = new MailOperation();
 
-        String yzm = "http://127.0.0.1:8080/resetPasswords.html?encryptionAccount=" + encryptionAccount;
-        System.out.println("ras:" + encryptionAccount);
+        String yzm = "http://127.0.0.1:8080/resetPasswords.html?urlEncryptionAccount=" + urlEncryptionAccount;
+        System.out.println("ras:" + urlEncryptionAccount);
 
         sb.append("<!DOCTYPE>" + "<div bgcolor='#f1fcfa'   style='border:1px solid #d9f4ee; font-size:14px; line-height:22px; color:#005aa0;padding-left:1px;padding-top:5px;   padding-bottom:5px;'><span style='font-weight:bold;'>温馨提示：</span>"
                 + "<div style='width:950px;font-family:arial;'>欢迎使用渡一教育平台，您的修改密码连接为：<br/><h2 style='color:green'><a href=" + yzm + ">" + yzm + "</a></h2><br/>本邮件由系统自动发出，请勿回复。<br/>感谢您的使用。<br/>XXXX有限公司</div>"
@@ -141,12 +141,14 @@ public class AdminService {
 
         Admin admin = adminDao.findByAccount(account);
 
+        String md5Password = MD5Util.MD5Encode(newPassword, "utf8");
+
         if (admin == null) {
 
             return false;
         } else {
 
-            admin.setPassword(newPassword);
+            admin.setPassword(md5Password);
 
             adminDao.updatePassword(admin);
 

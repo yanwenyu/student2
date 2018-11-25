@@ -1,16 +1,19 @@
 package com.duyi.hrb.controller;
 
 import com.alibaba.fastjson.JSONObject;
+import com.duyi.hrb.domain.Student;
 import com.duyi.hrb.service.StudentService;
 import com.duyi.hrb.util.RSAEncrypt;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.List;
 
 
 @Controller
@@ -19,15 +22,24 @@ public class StudentController {
     @Autowired
     StudentService studentService;
 
-    @RequestMapping(value = "/adm/findAll",method = RequestMethod.POST)
+    @RequestMapping(value = "/adm/findAll", method = RequestMethod.POST)
 
-    public void findAll(HttpServletRequest res, HttpServletResponse resp) throws Exception {
+    public void findAll(String callback,int page, HttpServletRequest res, HttpServletResponse resp) throws Exception {
+
+        JSONObject result = new JSONObject();
+
+
+        resp.setHeader("content-type", "application:json;charset=utf8");
+        resp.setHeader("Access-Control-Allow-Origin", "*");
+        resp.setHeader("Access-Control-Allow-Methods", "POST");
+        resp.setHeader("Access-Control-Allow-Headers", "x-requested-with,content-type");
 
         String uId = "";
 
         Cookie[] cookies = res.getCookies();
 
-        ok:for (Cookie cookie : cookies) {
+        ok:
+        for (Cookie cookie : cookies) {
 
             String accountName = cookie.getName();
 
@@ -37,13 +49,13 @@ public class StudentController {
 
                 uId = RSAEncrypt.decrypt(accountValue);
 
-//                System.out.println(uId);
-
                 break ok;
             }
         }
 
-        resp.getWriter().write(studentService.findAll(uId).toString());
+        List<Student> findAll = studentService.findAll(uId);
+        result.put("findAll", findAll.toString());
+        resp.getWriter().write(callback + "(" +result.toJSONString() + ")");
     }
 
 //    @RequestMapping("/page/findBySno")
@@ -68,7 +80,7 @@ public class StudentController {
 //        }
 //    }
 
-    @RequestMapping(value = "/adm/delBySno" ,method = RequestMethod.POST)
+    @RequestMapping(value = "/adm/delBySno", method = RequestMethod.POST)
 
     public void delBySno(String sNo, HttpServletResponse resp) throws IOException {
 
@@ -92,13 +104,15 @@ public class StudentController {
         }
     }
 
-    private JSONObject result = new JSONObject();
+//    JSONObject result = new JSONObject();
 
-    @RequestMapping(value = "/adm/addStudent" ,method = RequestMethod.POST)
+    @RequestMapping(value = "/adm/addStudent", method = RequestMethod.POST)
 
     public void addStudent(String sNo, String name, String email, Integer sex, Integer birth, String phone, String address, HttpServletRequest res, HttpServletResponse resp) throws Exception {
 
-        check(sNo,name,email,sex,birth,phone,address,res,resp);
+        check(sNo, name, email, sex, birth, phone, address, res, resp);
+
+        JSONObject result = new JSONObject();
 
 //        if (sNo == null || sNo.equals("")) {
 //            result.put("status", "fail");
@@ -151,7 +165,8 @@ public class StudentController {
 
         Cookie[] cookies = res.getCookies();
 
-        ok:for (Cookie cookie : cookies) {
+        ok:
+        for (Cookie cookie : cookies) {
 
             String accountName = cookie.getName();
 
@@ -187,11 +202,13 @@ public class StudentController {
 
     }
 
-    @RequestMapping(value = "/adm/updateStudent",method = RequestMethod.POST)
+    @RequestMapping(value = "/adm/updateStudent", method = RequestMethod.POST)
 
     public void updateStudent(String sNo, String name, String email, Integer sex, Integer birth, String phone, String address, HttpServletRequest res, HttpServletResponse resp) throws IOException {
 
-        check(sNo,name,email,sex,birth,phone,address,res,resp);
+        check(sNo, name, email, sex, birth, phone, address, res, resp);
+
+        JSONObject result = new JSONObject();
 
         boolean isTrue = studentService.update(sNo, name, email, sex, birth, phone, address);
 
@@ -212,6 +229,8 @@ public class StudentController {
     }
 
     private void check(String sNo, String name, String email, Integer sex, Integer birth, String phone, String address, HttpServletRequest res, HttpServletResponse resp) throws IOException {
+
+        JSONObject result = new JSONObject();
 
         if (sNo == null || sNo.equals("")) {
             result.put("status", "fail");
