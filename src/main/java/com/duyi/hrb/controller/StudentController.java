@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -23,7 +24,8 @@ public class StudentController {
 
     @RequestMapping(value = "/adm/findAll", method = RequestMethod.POST)
 
-    public void findAll(String callback, String uId, HttpServletRequest res, HttpServletResponse resp) throws Exception {
+
+    public void findAll(@RequestParam(name = "callback") String callback, String uId, HttpServletRequest res, HttpServletResponse resp) throws Exception {
 
         JSONObject result = new JSONObject();
 
@@ -33,7 +35,7 @@ public class StudentController {
 //        resp.setHeader("Access-Control-Allow-Headers", "x-requested-with,content-type");
         setHeader(resp);
 
-        String encodeUid = RSAEncrypt.decrypt(uId);
+//        String encodeUid = RSAEncrypt.decrypt(uId);
 
 //        String uId = "";
 //
@@ -54,9 +56,10 @@ public class StudentController {
 //            }
 //        }
 
-        List<Student> findAll = studentService.findAll(encodeUid);
+        List<Student> findAll = studentService.findAll(uId);
         result.put("findAll", findAll.toString());
         resp.getWriter().write(callback + "(" + result.toJSONString() + ")");
+//        resp.getWriter().write( result.toJSONString() );
     }
 
 
@@ -64,7 +67,7 @@ public class StudentController {
 
     @RequestMapping(value = "/adm/findByPage", method = RequestMethod.POST)
 
-    public void findByPage(String callback, int page, String uId, HttpServletRequest res, HttpServletResponse resp) throws Exception {
+    public void findByPage(@RequestParam(name = "callback") String callback, @RequestParam(name = "page") int page,@RequestParam(name = "size")int size, String uId, HttpServletRequest res, HttpServletResponse resp) throws Exception {
 
         JSONObject result = new JSONObject();
 //
@@ -95,8 +98,10 @@ public class StudentController {
 //        }
 
         String encodeUid = RSAEncrypt.decrypt(uId);
-        List<Student> findByPage = studentService.findByPage(encodeUid, page);
-        result.put("findAll", findByPage.toString());
+        List<Student> findByPage = studentService.findByPage(encodeUid, page , size);
+        int title = studentService.count();
+        result.put("title",title);
+        result.put("findBypageList", findByPage.toString());
         resp.getWriter().write(callback + "(" + result.toJSONString() + ")");
     }
 

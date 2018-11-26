@@ -22,7 +22,7 @@ public class Student {
 
     private String uId;
 
-    private int page;
+//    private int page;
 
     private Date ctime;
 
@@ -46,9 +46,9 @@ public class Student {
         this.utime = utime;
     }
 
-    public int getPage() { return page; }
-
-    public void setPage(int page) { this.page = page; }
+//    public int getPage() { return page; }
+//
+//    public void setPage(int page) { this.page = page; }
 
     public int getId() {
         return id;

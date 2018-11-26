@@ -44,9 +44,10 @@ public class AdminController {
 
     }
 
-    @RequestMapping(value = "/adminLogin")
+    @RequestMapping(value = "/adminLogin",method = RequestMethod.POST)
+    //@RequestParam(name = "callback") String callback,
     @ResponseBody
-    public void login(@RequestParam(name = "callback") String callback, String account, String password, HttpServletRequest res, HttpServletResponse resp) throws Exception {
+    public void login( String account, String password, HttpServletRequest res, HttpServletResponse resp) throws Exception {
 
         setHeader(resp);
 
@@ -57,7 +58,10 @@ public class AdminController {
 //      resp.setHeader("Access-Control-Allow-Credentials", "true");
 
         System.out.println("账号：" + account);
+
         System.out.println("密码：" + password);
+
+//        System.out.println(callback);
 
         JSONObject result = new JSONObject();
 
@@ -67,7 +71,9 @@ public class AdminController {
 
             result.put("message", "The account is null");
 
-            resp.getWriter().write(callback + "(" + result.toJSONString() + ")");
+            resp.getWriter().write( result.toJSONString() );
+
+//            resp.getWriter().write(callback + "(" + result.toJSONString() + ")");
 
             return;
         }
@@ -77,7 +83,7 @@ public class AdminController {
 
             result.put("message", "The password is null");
 
-            resp.getWriter().write(callback + "(" + result.toJSONString() + ")");
+            resp.getWriter().write( result.toJSONString() );
 
             return;
         }
@@ -90,7 +96,7 @@ public class AdminController {
 
             result.put("message", "account or password error");
 
-            resp.getWriter().write(callback + "(" + result.toJSONString() + ")");
+            resp.getWriter().write( result.toJSONString() );
         } else {
 
             String str = RSAEncrypt.encrypt(account);
@@ -105,15 +111,17 @@ public class AdminController {
 
             result.put("status", "success");
 
-            resp.getWriter().write(callback + "(" + result.toJSONString() + ")");
+            resp.getWriter().write( result.toJSONString() );
         }
         resp.getWriter().close();
 
     }
 
-    @RequestMapping(value = "/adminActivate", method = RequestMethod.POST)
+    @RequestMapping(value = "/adminActivate", method = RequestMethod.GET)
+
+    //@RequestParam(name = "callback") String callback,
     //添加一个update修改状态
-    public void adminActivate(String encryptionAccount, HttpServletRequest res, HttpServletResponse resp) throws Exception {
+    public void adminActivate( String encryptionAccount, HttpServletRequest res, HttpServletResponse resp) throws Exception {
 
         setHeader(resp);
 
@@ -132,7 +140,9 @@ public class AdminController {
 
             result.put("status", "success");
 
-            resp.getWriter().write(result.toJSONString());
+            resp.getWriter().write( result.toJSONString() );
+
+//            resp.getWriter().write(callback + "(" + result.toJSONString() + ")");
 
 
         } else {
@@ -141,13 +151,18 @@ public class AdminController {
 
             result.put("status", "fail");
 
-            resp.getWriter().write(result.toJSONString());
+            resp.getWriter().write( result.toJSONString() );
+
+//            resp.getWriter().write(callback + "(" + result.toJSONString() + ")");
 
         }
 
     }
 
     @RequestMapping(value = "/register", method = RequestMethod.POST)
+
+    //@RequestParam(name = "callback") String callback,
+
     public void registe(String account, String password, String rePassword, String email, HttpServletResponse resp) throws Exception {
 
 //        resp.setHeader("content-type", "application:json;charset=utf8");
@@ -167,7 +182,7 @@ public class AdminController {
 
             result.put("message", "The account count null");
 
-            resp.getWriter().write(result.toJSONString());
+            resp.getWriter().write( result.toJSONString() );
 
             return;
         }
@@ -178,7 +193,7 @@ public class AdminController {
 
             result.put("message", "The password count null");
 
-            resp.getWriter().write(result.toJSONString());
+            resp.getWriter().write( result.toJSONString() );
 
             return;
         }
@@ -189,7 +204,7 @@ public class AdminController {
 
             result.put("message", "The rePassword count null");
 
-            resp.getWriter().write(result.toJSONString());
+            resp.getWriter().write( result.toJSONString() );
 
             return;
         }
@@ -200,7 +215,7 @@ public class AdminController {
 
             result.put("message", "The two input passwords do not match");
 
-            resp.getWriter().write(result.toJSONString());
+            resp.getWriter().write( result.toJSONString() );
 
             return;
 
@@ -212,7 +227,7 @@ public class AdminController {
 
             result.put("message", "The email count null");
 
-            resp.getWriter().write(result.toJSONString());
+            resp.getWriter().write( result.toJSONString() );
 
             return;
         }
@@ -234,7 +249,7 @@ public class AdminController {
 
             result.put("message", "The Email format error");
 
-            resp.getWriter().write(result.toJSONString());
+            resp.getWriter().write( result.toJSONString() );
 
             return;
 
@@ -256,8 +271,7 @@ public class AdminController {
 
             String subject = "输入邮件主题";
 
-            String encryptionAccount = RSAEncrypt.encrypt(account);
-
+            String encryptionAccount = URLEncoder.encode(RSAEncrypt.encrypt(account));
 
             adminService.senEmail(encryptionAccount, user, password1, host, from, to, subject);
 
@@ -265,7 +279,7 @@ public class AdminController {
 
             result.put("message", "Please open your registered email for activation!");
 
-            resp.getWriter().write(result.toJSONString());
+            resp.getWriter().write( result.toJSONString() );
 
         } else {
 
@@ -273,7 +287,7 @@ public class AdminController {
 
             result.put("message", "The admin is exist");
 
-            resp.getWriter().write(result.toJSONString());
+            resp.getWriter().write( result.toJSONString() );
 
         }
     }

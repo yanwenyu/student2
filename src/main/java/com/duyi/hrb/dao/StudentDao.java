@@ -13,7 +13,9 @@ public interface StudentDao {
 
     List<Student> findByAll(String uId);
 
-    List<Student> findByPage(String uId,int page);
+    List<Student> findByPage(String uId,int offset,int size);
 
     Student findBySno(String sno);
+
+    int count();
 }

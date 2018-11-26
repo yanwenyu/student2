@@ -103,9 +103,12 @@ public class StudentService {
         return studentDao.findByAll(uId);
     }
 
-    public List<Student> findByPage(String uId,Integer page) {
+    public List<Student> findByPage(String uId,Integer page,Integer size) {
 
-        return studentDao.findByPage(uId,page);
+        Integer offset = (page - 1) * size ;
+
+
+        return studentDao.findByPage(uId,offset,size);
     }
 
     public Student findBySno(String sNo) {
@@ -119,6 +122,10 @@ public class StudentService {
 
             return student;
         }
+    }
+
+    public int count() {
+        return studentDao.count();
     }
 
 //    public Student login(String sNo, String password) {
