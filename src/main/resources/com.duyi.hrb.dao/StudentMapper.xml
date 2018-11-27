@@ -35,9 +35,15 @@
 
     </select>
 
-    <select id="count" resultType="integer">
+    <select id="findBySno" resultType="com.duyi.hrb.domain.Student">
 
-        select count (*) from student_inf;
+        select * from student_inf where sNo = #{sNo};
+
+    </select>
+
+    <select id="getPageSum" resultType="integer">
+
+        select count(1) from student_inf;
 
     </select>
 </mapper>

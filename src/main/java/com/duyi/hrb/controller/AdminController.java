@@ -1,8 +1,11 @@
 package com.duyi.hrb.controller;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.duyi.hrb.domain.Admin;
+import com.duyi.hrb.domain.RespModel;
 import com.duyi.hrb.domain.Student;
+import com.duyi.hrb.enums.RespStatusEnum;
 import com.duyi.hrb.service.AdminService;
 import com.duyi.hrb.service.StudentService;
 import com.duyi.hrb.util.MD5Util;
@@ -27,7 +30,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 @Controller
-public class AdminController {
+public class AdminController extends BaseController {
 
     @Autowired
     AdminService adminService;
@@ -44,10 +47,10 @@ public class AdminController {
 
     }
 
-    @RequestMapping(value = "/adminLogin",method = RequestMethod.POST)
+    @RequestMapping(value = "/adminLogin",method = RequestMethod.POST)//不能是post~~~~？？？？？
     //@RequestParam(name = "callback") String callback,
     @ResponseBody
-    public void login( String account, String password, HttpServletRequest res, HttpServletResponse resp) throws Exception {
+    public void login( String account, String password, HttpServletResponse resp) throws Exception {
 
         setHeader(resp);
 
@@ -170,7 +173,6 @@ public class AdminController {
 //        resp.setHeader("Access-Control-Allow-Methods", "POST");
 //        resp.setHeader("Access-Control-Allow-Headers", "x-requested-with,content-type");
 
-        setHeader(resp);
 
         System.out.println(account + password + rePassword + email);
 
@@ -293,30 +295,37 @@ public class AdminController {
     }
 
 
-    @RequestMapping(value = "/adm/findBySno", method = RequestMethod.POST)
+    @RequestMapping(value = "/adm/findBySno", method = RequestMethod.GET)
     @ResponseBody
 
-    public void findBySno(String sNo, HttpServletResponse resp) throws IOException {
+    public void findBySno(@RequestParam(name = "callback") String callback,@RequestParam(name = "sNo") String sNo, HttpServletResponse resp) throws IOException {
+
+        System.out.println("sNo:" + sNo);
+
+        String resultString = "";
 
         Student stu = studentService.findBySno(sNo);
-
-        JSONObject result = new JSONObject();
 
         setHeader(resp);
 
         if (stu == null) {
 
-            result.put("status", "fail");
-
-            result.put("message", "not find this student");
-
-            resp.getWriter().write(result.toJSONString());
+            resultString = JSON.toJSONString(
+                    new RespModel(
+                            RespStatusEnum.FAIL.getValue(),
+                            "The student not exit",
+                            null));
 
         } else {
 
-            resp.getWriter().write(stu.toString());
+            resultString = JSON.toJSONString(
+                    new RespModel(
+                            RespStatusEnum.SUCCESS.getValue(),
+                            null,
+                            stu));
 
         }
+            writeJsonp(resp,callback,resultString);
     }
 
     @RequestMapping(value = "/act", method = RequestMethod.POST)

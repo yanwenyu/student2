@@ -37,7 +37,16 @@ public class AdminService {
 
             admin.setEmail(email);
 
-            adminDao.add(admin);
+            try {
+
+                adminDao.add(admin);
+
+            } catch (Exception e) {
+
+                return false;
+
+            }
+
 
             return true;
         }

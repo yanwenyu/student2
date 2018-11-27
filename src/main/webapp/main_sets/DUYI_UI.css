@@ -1,0 +1,310 @@
+body{
+    margin: 0px;
+    padding: 0px;
+}
+/* ============================================================================ */
+/* 渡一 黑风格 */
+.DUYI{
+    display: inline-block;
+    width: 100%;
+    height: 90px;
+    background-color:#222;
+
+}
+/* ============================================================================ */
+/* 渡一图标风格 */
+.DUYI_ICON{
+    display: inline-block;
+    height: 40px;
+    width: 40px;
+}
+/* ============================================================================ */
+/* 渡一DIV */
+.DUYI_DIV{
+    display: inline-block;
+}
+/* ============================================================================ */
+/* 渡一通用按钮样式 */
+.DUYI_button {
+    -webkit-user-select:none;
+    -moz-user-select:none;
+    -ms-user-select:none;
+    user-select:none;
+    display: inline-block;
+    font-family: "MicrosoftYaHei";
+    font-size: 14px;
+    height: 38px;
+    width: 116px;
+    line-height: 38px;
+    text-align: center;
+    color: #fff;
+    background: #222;
+    background: linear-gradient(to right, #fff 0%, #222 0%);
+    cursor: pointer;
+}
+.DUYI_button:hover{
+    background: #444;
+    background: linear-gradient(to right, #444 100%, #222 100%);
+    animation: gradient_animation 0.2s;
+ 
+}
+
+@keyframes gradient_animation{
+    0% {background: linear-gradient(to right, #444 0%, #222 0%);}
+    5% {background: linear-gradient(to right, #444 5%, #222 5%);}
+    10% {background: linear-gradient(to right, #444 10%, #222 10%);}
+    15% {background: linear-gradient(to right, #444 15%, #222 15%);}
+    20% {background: linear-gradient(to right, #444 20%, #222 20%);}
+    25% {background: linear-gradient(to right, #444 25%, #222 25%);}
+    30% {background: linear-gradient(to right, #444 30%, #222 30%);}
+    35% {background: linear-gradient(to right, #444 35%, #222 35%);}
+    40% {background: linear-gradient(to right, #444 40%, #222 40%);}
+    45% {background: linear-gradient(to right, #444 45%, #222 45%);}
+    50% {background: linear-gradient(to right, #444 50%, #222 50%);}
+    55% {background: linear-gradient(to right, #444 55%, #222 55%);}
+    60% {background: linear-gradient(to right, #444 60%, #222 60%);}
+    65% {background: linear-gradient(to right, #444 65%, #222 65%);}
+    70% {background: linear-gradient(to right, #444 70%, #222 70%);}
+    75% {background: linear-gradient(to right, #444 75%, #222 75%);}
+    80% {background: linear-gradient(to right, #444 80%, #222 80%);}
+    85% {background: linear-gradient(to right, #444 85%, #222 85%);}
+    90% {background: linear-gradient(to right, #444 90%, #222 90%);}
+    95% {background: linear-gradient(to right, #444 95%, #222 95%);}
+    100% {background: linear-gradient(to right, #444 100%, #222 100%);}
+}
+/* ============================================================================ */
+/* 渡一无动画按钮样式 */
+.DUYI_button_none {
+    -webkit-user-select:none;
+    -moz-user-select:none;
+    -ms-user-select:none;
+    user-select:none;
+    display: inline-block;
+    font-family: "MicrosoftYaHei";
+    font-size: 14px;
+    height: 38px;
+    width: 116px;
+    line-height: 38px;
+    text-align: center;
+    color: #fff;
+    background: #222;
+    cursor: pointer;
+}
+
+/* ============================================================================ */
+/* 渡一响应式选择按钮  下划线型 */
+.DUYI_chooseButton_underline {
+    -webkit-user-select:none;
+    -moz-user-select:none;
+    -ms-user-select:none;
+    user-select:none;
+    display: inline-block;
+    font-family: "MicrosoftYaHei";
+    font-size: 14px;
+    height: 38px;
+    width: 116px;
+    line-height: 38px;
+    text-align: center;
+    color: #fff;
+    background: #222;
+    background: linear-gradient(to right, #fff 0%, #222 0%);
+    cursor: pointer;
+    vertical-align: bottom;
+}
+.DUYI_chooseButton_underline::after{
+    transition:width 1s;
+    display: block;
+    content: "1";
+    height: 0px;
+    overflow: hidden;
+    border-bottom: 1px solid;
+    width: 0%;
+}
+.DUYI_chooseButton_underline:hover::after{
+    transition:width 1s;
+    width: 100%;
+}
+/* ============================================================================ */
+/* 渡一响应式选择按钮  下划线型(不固定宽高) */
+.DUYI_chooseButton_underline_none {
+    -webkit-user-select:none;
+    -moz-user-select:none;
+    -ms-user-select:none;
+    user-select:none;
+    display: inline-block;
+    font-family: "MicrosoftYaHei";
+    font-size: 14px;
+    line-height: 38px;
+    text-align: center;
+    color: #fff;
+    background: #222;
+    background: linear-gradient(to right, #fff 0%, #222 0%);
+    cursor: pointer;
+    vertical-align: bottom;
+    padding: 0px 14px
+}
+.DUYI_chooseButton_underline_none::after{
+    transition:width 1s;
+    display: block;
+    content: "1";
+    height: 0px;
+    overflow: hidden;
+    border-bottom: 2px solid;
+    width: 0%;
+}
+.DUYI_chooseButton_underline_none:hover::after{
+    transition:width 1s;
+    width: 100%;
+}
+/* ============================================================================ */
+/* 渡一文本框样式 */
+.DUYI_text{
+    display: inline-block;
+    width: 90%;
+    text-align: left;
+    border: 1px solid #222;
+    border-radius: 4px;
+    padding: 10px 12px;
+}
+/* ============================================================================ */
+/* 渡一聚焦线样式 */
+
+.DUYI_focusLine::after{
+    margin: 25px;
+    vertical-align: middle;
+    overflow: hidden;
+    content: "= =你能看到我是你的荣幸";
+    display: inline-block;
+    height: 0px;
+    width: 116px;
+    border: #222 solid 2px;
+}
+.DUYI_focusLine::before{
+    margin: 25px;
+    vertical-align: middle;
+    overflow: hidden;
+    content: "= =你能看到我是你的荣幸";
+    display: inline-block;
+    height: 0px;
+    width: 116px;
+    border: #222 solid 2px;
+}
+/* ============================================================================ */
+/* 渡一输入框样式 */
+.DUYI_input{
+    outline: none;
+    font-family: MicrosoftYaHei;
+    font-size: 16px;
+    color: #666;
+    padding: 5px 24px;
+}
+/* ============================================================================ */
+/* 渡一复选框框样式      该样式需要被DUYI_UI.init_checkbox函数初始化*/
+.DUYI_checkbox{
+    -webkit-user-select:none;
+    -moz-user-select:none;
+    -ms-user-select:none;
+    user-select:none;
+    cursor: pointer;
+}
+.DUYI_checkbox::before{
+    margin-right: 10px;
+    border-radius: 2px;
+    vertical-align: middle;
+    content: " ";
+    display: inline-block;
+    height: 0px;
+    overflow: hidden;
+    padding: 6px;
+    border: 2px solid #222;
+    width: 0px;
+}
+[active="true"].DUYI_checkbox::before{
+    
+    border-radius: 2px;
+    vertical-align: middle;
+    content: " ";
+    display: inline-block;
+    height: 0px;
+    overflow: hidden;
+    padding: 6px;
+    background-color: aqua;
+    border: 2px solid #222;
+    width: 0px;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* =========awt组建工厂样式，一般不对外开放================================================================================= */
+.DUYI_AWT_msgBox{
+    box-shadow: 0px 0px 16px 1px;
+    background-color: #eee;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    display: inline-block;
+    position: absolute;
+    border-radius: 5px;
+    overflow: hidden;
+    width: 400px;
+    height: 200px;
+    border: #222 solid 2px;
+
+}
+
+
+
+
+
+

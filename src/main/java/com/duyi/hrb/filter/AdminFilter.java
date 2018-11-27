@@ -111,7 +111,9 @@ public class AdminFilter implements Filter {
 
             System.out.println("跳转回adminLogin.html");
 
-            req.getRequestDispatcher("/adminLogin").forward(req, res);
+            resp.sendRedirect("/login/login.html#login");
+
+//            req.getRequestDispatcher("/login/login.html#login").forward(req, res);
 
         } else if ( a == 1) { //登录未激活，跳转到激活页面
 

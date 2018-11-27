@@ -125,7 +125,7 @@ public class StudentService {
     }
 
     public int count() {
-        return studentDao.count();
+        return studentDao.getPageSum();
     }
 
 //    public Student login(String sNo, String password) {
